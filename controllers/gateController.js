@@ -2,22 +2,17 @@ const asyncHandler = require('express-async-handler');
 const axios = require('axios');
 
 // @desc    user enter
-// @route   POST /entry/:id/:gymID
+// @route   GET /entry/:id/:gymID
 // @access  PUBLIC
 const entry = asyncHandler(async (req, res) => {
     try {
-        // Send a GET request to the specified URL
-        const response = await axios.get('https://gymhub.up.railway.app/api/gate/check');
-        
-        // Check the status code of the response
+        const {gymID, userID} = req.params;
+        const response = await axios.get(`https://gymhub.up.railway.app/api/gate/entry/${gymID}/${userID}`);
         if (response.status === 201) {
-            
-            // If status code is 201, return status code 201
             return res.status(201).json({
                 msg: 'Entry permitted'
             });
         } else {
-            // If status code is not 201, return status code 400
             return res.status(400).json({
                 msg: 'Entry denied'
             });
@@ -34,7 +29,7 @@ const entry = asyncHandler(async (req, res) => {
 });
 
 // @desc    user exit
-// @route   POST /entry/:id/:gymID
+// @route   GET /entry/:id/:gymID
 // @access  PUBLIC
 const exit = asyncHandler(async (req, res) => {
     try{
