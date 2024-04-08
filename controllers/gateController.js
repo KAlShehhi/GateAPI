@@ -1,46 +1,37 @@
-const asyncHandler = require('express-async-handler');
+// Importing necessary modules
 const axios = require('axios');
+const asyncHandler = require('express-async-handler');
 
-// @desc    user enter
-// @route   GET /entry/:id/:gymID
+// @desc    User enters
+// @route   POST /entry/
 // @access  PUBLIC
 const entry = asyncHandler(async (req, res) => {
+    const {userID, gymID } = req.body;
     try {
-        const {gymID, userID} = req.params;
-        const response = await axios.get(`https://gymhub.up.railway.app/api/gate/entry/${gymID}/${userID}`);
-        if (response.status === 201) {
-            return res.status(201).json({
-                msg: 'Entry permitted'
-            });
-        } else {
-            return res.status(400).json({
-                msg: 'Entry denied'
+        const response = await axios.get(`http://192.168.0.100:3000/api/gate/entry/${gymID}/${userID}`);
+        if (response.status === 200) {
+            return res.status(200).json({
+                msg: 'Entry successful',
             });
         }
+        return res.status(401).json({
+            msg: 'Access Denied',
+            error: error.message 
+        });
     } catch (error) {
-        // Log the error for debugging purposes
-        console.error('Error making request to the gate check API:', error);
-
-        // Return a 400 status code if there's an error in the try block
-        return res.status(400).json({
-            msg: 'Server error: creating class'
+        return res.status(401).json({
+            msg: 'Access Denied',
+         
         });
     }
 });
 
 // @desc    user exit
-// @route   GET /entry/:id/:gymID
+// @route   POST /exit
 // @access  PUBLIC
 const exit = asyncHandler(async (req, res) => {
-    try{
-        return res.status(200).json({
-            msg: 'Done'
-        });
-    }catch{
-        return res.status(400).json({
-            msg: 'Server error:  creating class'
-        })
-    }
+    res.status(401).send('Access Denied');
+    //TODO
 });
 
 module.exports = {entry, exit}
