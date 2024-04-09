@@ -8,7 +8,8 @@ const asyncHandler = require('express-async-handler');
 const entry = asyncHandler(async (req, res) => {
     const {userID, gymID } = req.body;
     try {
-        const response = await axios.get(`http://192.168.0.100:3000/api/gate/entry/${gymID}/${userID}`);
+        const response = await axios.get(`https://gymhub.up.railway.app/api/gate/entry/${gymID}/${userID}`);
+        console.log(response.status);
         if (response.status === 200) {
             return res.status(200).json({
                 msg: 'Entry successful',
@@ -30,8 +31,25 @@ const entry = asyncHandler(async (req, res) => {
 // @route   POST /exit
 // @access  PUBLIC
 const exit = asyncHandler(async (req, res) => {
-    res.status(401).send('Access Denied');
-    //TODO
+    const {userID, gymID } = req.body;
+    try {
+        const response = await axios.get(`https://gymhub.up.railway.app/api/gate/exit/${gymID}/${userID}`);
+        console.log(response.status);
+        if (response.status === 200) {
+            return res.status(200).json({
+                msg: 'Exit successful',
+            });
+        }
+        return res.status(401).json({
+            msg: 'Access Denied',
+            error: error.message 
+        });
+    } catch (error) {
+        return res.status(401).json({
+            msg: 'Access Denied',
+         
+        });
+    }
 });
 
 module.exports = {entry, exit}
